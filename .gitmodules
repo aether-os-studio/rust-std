@@ -1,0 +1,3 @@
+[submodule "src/llvm-project"]
+	path = src/llvm-project
+	url = https://gitee.com/lihanrui2913/llvm-project
