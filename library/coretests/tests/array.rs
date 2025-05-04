@@ -157,11 +157,9 @@ fn iterator_count() {
 
 #[test]
 fn iterator_flat_map() {
-    assert!(
-        (0..5)
-            .flat_map(|i| IntoIterator::into_iter([2 * i, 2 * i + 1]))
-            .eq(0..10)
-    );
+    assert!((0..5)
+        .flat_map(|i| IntoIterator::into_iter([2 * i, 2 * i + 1]))
+        .eq(0..10));
 }
 
 #[test]

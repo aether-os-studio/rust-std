@@ -1,7 +1,7 @@
 //! Common code for printing backtraces.
 #![forbid(unsafe_op_in_unsafe_fn)]
 
-use crate::backtrace_rs::{self, BacktraceFmt, BytesOrWideString, PrintFmt};
+// use crate::backtrace_rs::{self, BacktraceFmt, BytesOrWideString, PrintFmt};
 use crate::borrow::Cow;
 use crate::io::prelude::*;
 use crate::path::{self, Path, PathBuf};

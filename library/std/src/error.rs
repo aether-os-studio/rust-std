@@ -6,7 +6,7 @@ pub use core::error::Error;
 #[unstable(feature = "error_generic_member_access", issue = "99301")]
 pub use core::error::{Request, request_ref, request_value};
 
-use crate::backtrace::Backtrace;
+// use crate::backtrace::Backtrace;
 use crate::fmt::{self, Write};
 
 /// An error reporter that prints an error and its sources.
@@ -446,18 +446,18 @@ impl<E> Report<E>
 where
     E: Error,
 {
-    fn backtrace(&self) -> Option<&Backtrace> {
-        // have to grab the backtrace on the first error directly since that error may not be
-        // 'static
-        let backtrace = request_ref(&self.error);
-        let backtrace = backtrace.or_else(|| {
-            self.error
-                .source()
-                .map(|source| source.sources().find_map(|source| request_ref(source)))
-                .flatten()
-        });
-        backtrace
-    }
+    // fn backtrace(&self) -> Option<&Backtrace> {
+    //     // have to grab the backtrace on the first error directly since that error may not be
+    //     // 'static
+    //     let backtrace = request_ref(&self.error);
+    //     let backtrace = backtrace.or_else(|| {
+    //         self.error
+    //             .source()
+    //             .map(|source| source.sources().find_map(|source| request_ref(source)))
+    //             .flatten()
+    //     });
+    //     backtrace
+    // }
 
     /// Format the report as a single line.
     #[unstable(feature = "error_reporter", issue = "90172")]
@@ -500,15 +500,15 @@ where
             }
         }
 
-        if self.show_backtrace {
-            if let Some(backtrace) = self.backtrace() {
-                write!(
-                    f,
-                    "\n\nStack backtrace:\n{}",
-                    backtrace.to_string().trim_end()
-                )?;
-            }
-        }
+        // if self.show_backtrace {
+        //     if let Some(backtrace) = self.backtrace() {
+        //         write!(
+        //             f,
+        //             "\n\nStack backtrace:\n{}",
+        //             backtrace.to_string().trim_end()
+        //         )?;
+        //     }
+        // }
 
         Ok(())
     }

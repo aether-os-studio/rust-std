@@ -10,7 +10,7 @@ mod personality;
 
 pub mod anonymous_pipe;
 pub mod args;
-pub mod backtrace;
+// pub mod backtrace;
 pub mod cmath;
 pub mod env;
 pub mod env_consts;

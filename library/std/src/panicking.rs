@@ -21,11 +21,12 @@ use crate::any::Any;
 use crate::io::try_set_output_capture;
 use crate::mem::{self, ManuallyDrop};
 use crate::panic::{BacktraceStyle, PanicHookInfo};
-use crate::sync::atomic::{Atomic, AtomicBool, Ordering};
+// use crate::sync::atomic::{Atomic, AtomicBool, Ordering};
 use crate::sync::{PoisonError, RwLock};
-use crate::sys::backtrace;
+// use crate::sys::backtrace;
 use crate::sys::stdio::panic_output;
-use crate::{fmt, intrinsics, process, thread};
+// use crate::{fmt, intrinsics, process, thread};
+use crate::{fmt, intrinsics, thread};
 
 // This forces codegen of the function called by panic!() inside the std crate, rather than in
 // downstream crates. Primarily this is useful for rustc's codegen tests, which rely on noticing
@@ -265,71 +266,71 @@ fn default_hook(info: &PanicHookInfo<'_>) {
 
     let msg = payload_as_str(info.payload());
 
-    let write = #[optimize(size)]
-    |err: &mut dyn crate::io::Write| {
-        // Use a lock to prevent mixed output in multithreading context.
-        // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
-        let mut lock = backtrace::lock();
+    // let write = #[optimize(size)]
+    // |err: &mut dyn crate::io::Write| {
+    //     // Use a lock to prevent mixed output in multithreading context.
+    //     // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
+    //     let mut lock = backtrace::lock();
 
-        thread::with_current_name(|name| {
-            let name = name.unwrap_or("<unnamed>");
+    //     thread::with_current_name(|name| {
+    //         let name = name.unwrap_or("<unnamed>");
 
-            // Try to write the panic message to a buffer first to prevent other concurrent outputs
-            // interleaving with it.
-            let mut buffer = [0u8; 512];
-            let mut cursor = crate::io::Cursor::new(&mut buffer[..]);
+    //         // Try to write the panic message to a buffer first to prevent other concurrent outputs
+    //         // interleaving with it.
+    //         let mut buffer = [0u8; 512];
+    //         let mut cursor = crate::io::Cursor::new(&mut buffer[..]);
 
-            let write_msg = |dst: &mut dyn crate::io::Write| {
-                // We add a newline to ensure the panic message appears at the start of a line.
-                writeln!(dst, "\nthread '{name}' panicked at {location}:\n{msg}")
-            };
+    //         let write_msg = |dst: &mut dyn crate::io::Write| {
+    //             // We add a newline to ensure the panic message appears at the start of a line.
+    //             writeln!(dst, "\nthread '{name}' panicked at {location}:\n{msg}")
+    //         };
 
-            if write_msg(&mut cursor).is_ok() {
-                let pos = cursor.position() as usize;
-                let _ = err.write_all(&buffer[0..pos]);
-            } else {
-                // The message did not fit into the buffer, write it directly instead.
-                let _ = write_msg(err);
-            };
-        });
+    //         if write_msg(&mut cursor).is_ok() {
+    //             let pos = cursor.position() as usize;
+    //             let _ = err.write_all(&buffer[0..pos]);
+    //         } else {
+    //             // The message did not fit into the buffer, write it directly instead.
+    //             let _ = write_msg(err);
+    //         };
+    //     });
 
-        static FIRST_PANIC: Atomic<bool> = AtomicBool::new(true);
+    //     static FIRST_PANIC: Atomic<bool> = AtomicBool::new(true);
 
-        match backtrace {
-            // SAFETY: we took out a lock just a second ago.
-            Some(BacktraceStyle::Short) => {
-                drop(lock.print(err, crate::backtrace_rs::PrintFmt::Short))
-            }
-            Some(BacktraceStyle::Full) => {
-                drop(lock.print(err, crate::backtrace_rs::PrintFmt::Full))
-            }
-            Some(BacktraceStyle::Off) => {
-                if FIRST_PANIC.swap(false, Ordering::Relaxed) {
-                    let _ = writeln!(
-                        err,
-                        "note: run with `RUST_BACKTRACE=1` environment variable to display a \
-                             backtrace"
-                    );
-                    if cfg!(miri) {
-                        let _ = writeln!(
-                            err,
-                            "note: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` \
-                                for the environment variable to have an effect"
-                        );
-                    }
-                }
-            }
-            // If backtraces aren't supported or are forced-off, do nothing.
-            None => {}
-        }
-    };
+    //     match backtrace {
+    //         // SAFETY: we took out a lock just a second ago.
+    //         Some(BacktraceStyle::Short) => {
+    //             drop(lock.print(err, crate::backtrace_rs::PrintFmt::Short))
+    //         }
+    //         Some(BacktraceStyle::Full) => {
+    //             drop(lock.print(err, crate::backtrace_rs::PrintFmt::Full))
+    //         }
+    //         Some(BacktraceStyle::Off) => {
+    //             if FIRST_PANIC.swap(false, Ordering::Relaxed) {
+    //                 let _ = writeln!(
+    //                     err,
+    //                     "note: run with `RUST_BACKTRACE=1` environment variable to display a \
+    //                          backtrace"
+    //                 );
+    //                 if cfg!(miri) {
+    //                     let _ = writeln!(
+    //                         err,
+    //                         "note: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` \
+    //                             for the environment variable to have an effect"
+    //                     );
+    //                 }
+    //             }
+    //         }
+    //         // If backtraces aren't supported or are forced-off, do nothing.
+    //         None => {}
+    //     }
+    // };
 
-    if let Ok(Some(local)) = try_set_output_capture(None) {
-        write(&mut *local.lock().unwrap_or_else(|e| e.into_inner()));
-        try_set_output_capture(Some(local)).ok();
-    } else if let Some(mut out) = panic_output() {
-        write(&mut out);
-    }
+    // if let Ok(Some(local)) = try_set_output_capture(None) {
+    //     write(&mut *local.lock().unwrap_or_else(|e| e.into_inner()));
+    //     try_set_output_capture(Some(local)).ok();
+    // } else if let Some(mut out) = panic_output() {
+    //     write(&mut out);
+    // }
 }
 
 #[cfg(not(test))]
@@ -700,26 +701,28 @@ pub fn begin_panic_handler(info: &core::panic::PanicInfo<'_>) -> ! {
 
     let loc = info.location().unwrap(); // The current implementation always returns Some
     let msg = info.message();
-    crate::sys::backtrace::__rust_end_short_backtrace(move || {
-        if let Some(s) = msg.as_str() {
-            rust_panic_with_hook(
-                &mut StaticStrPayload(s),
-                loc,
-                info.can_unwind(),
-                info.force_no_backtrace(),
-            );
-        } else {
-            rust_panic_with_hook(
-                &mut FormatStringPayload {
-                    inner: &msg,
-                    string: None,
-                },
-                loc,
-                info.can_unwind(),
-                info.force_no_backtrace(),
-            );
-        }
-    })
+    // crate::sys::backtrace::__rust_end_short_backtrace(move || {
+    //     if let Some(s) = msg.as_str() {
+    //         rust_panic_with_hook(
+    //             &mut StaticStrPayload(s),
+    //             loc,
+    //             info.can_unwind(),
+    //             info.force_no_backtrace(),
+    //         );
+    //     } else {
+    //         rust_panic_with_hook(
+    //             &mut FormatStringPayload {
+    //                 inner: &msg,
+    //                 string: None,
+    //             },
+    //             loc,
+    //             info.can_unwind(),
+    //             info.force_no_backtrace(),
+    //         );
+    //     }
+    // })
+
+    unsafe { libc::exit(-1) }
 }
 
 /// This is the entry point of panicking for the non-format-string variants of
@@ -748,50 +751,52 @@ pub const fn begin_panic<M: Any + Send>(msg: M) -> ! {
         intrinsics::abort()
     }
 
-    struct Payload<A> {
-        inner: Option<A>,
-    }
+    // struct Payload<A> {
+    //     inner: Option<A>,
+    // }
 
-    unsafe impl<A: Send + 'static> PanicPayload for Payload<A> {
-        fn take_box(&mut self) -> *mut (dyn Any + Send) {
-            // Note that this should be the only allocation performed in this code path. Currently
-            // this means that panic!() on OOM will invoke this code path, but then again we're not
-            // really ready for panic on OOM anyway. If we do start doing this, then we should
-            // propagate this allocation to be performed in the parent of this thread instead of the
-            // thread that's panicking.
-            let data = match self.inner.take() {
-                Some(a) => Box::new(a) as Box<dyn Any + Send>,
-                None => process::abort(),
-            };
-            Box::into_raw(data)
-        }
+    // unsafe impl<A: Send + 'static> PanicPayload for Payload<A> {
+    //     fn take_box(&mut self) -> *mut (dyn Any + Send) {
+    //         // Note that this should be the only allocation performed in this code path. Currently
+    //         // this means that panic!() on OOM will invoke this code path, but then again we're not
+    //         // really ready for panic on OOM anyway. If we do start doing this, then we should
+    //         // propagate this allocation to be performed in the parent of this thread instead of the
+    //         // thread that's panicking.
+    //         let data = match self.inner.take() {
+    //             Some(a) => Box::new(a) as Box<dyn Any + Send>,
+    //             None => process::abort(),
+    //         };
+    //         Box::into_raw(data)
+    //     }
 
-        fn get(&mut self) -> &(dyn Any + Send) {
-            match self.inner {
-                Some(ref a) => a,
-                None => process::abort(),
-            }
-        }
-    }
+    //     fn get(&mut self) -> &(dyn Any + Send) {
+    //         match self.inner {
+    //             Some(ref a) => a,
+    //             None => process::abort(),
+    //         }
+    //     }
+    // }
 
-    impl<A: 'static> fmt::Display for Payload<A> {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            match &self.inner {
-                Some(a) => f.write_str(payload_as_str(a)),
-                None => process::abort(),
-            }
-        }
-    }
+    // impl<A: 'static> fmt::Display for Payload<A> {
+    //     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    //         match &self.inner {
+    //             Some(a) => f.write_str(payload_as_str(a)),
+    //             None => process::abort(),
+    //         }
+    //     }
+    // }
 
-    let loc = Location::caller();
-    crate::sys::backtrace::__rust_end_short_backtrace(move || {
-        rust_panic_with_hook(
-            &mut Payload { inner: Some(msg) },
-            loc,
-            /* can_unwind */ true,
-            /* force_no_backtrace */ false,
-        )
-    })
+    // let loc = Location::caller();
+    // crate::sys::backtrace::__rust_end_short_backtrace(move || {
+    //     rust_panic_with_hook(
+    //         &mut Payload { inner: Some(msg) },
+    //         loc,
+    //         /* can_unwind */ true,
+    //         /* force_no_backtrace */ false,
+    //     )
+    // })
+
+    unsafe { libc::exit(-1) }
 }
 
 fn payload_as_str(payload: &dyn Any) -> &str {

@@ -562,15 +562,15 @@ impl Builder {
             }
 
             let f = f.into_inner();
-            let try_result = panic::catch_unwind(panic::AssertUnwindSafe(|| {
-                crate::sys::backtrace::__rust_begin_short_backtrace(|| hooks.run());
-                crate::sys::backtrace::__rust_begin_short_backtrace(f)
-            }));
+            // let try_result = panic::catch_unwind(panic::AssertUnwindSafe(|| {
+            //     crate::sys::backtrace::__rust_begin_short_backtrace(|| hooks.run());
+            //     crate::sys::backtrace::__rust_begin_short_backtrace(f)
+            // }));
             // SAFETY: `their_packet` as been built just above and moved by the
             // closure (it is an Arc<...>) and `my_packet` will be stored in the
             // same `JoinInner` as this closure meaning the mutation will be
             // safe (not modify it and affect a value far away).
-            unsafe { *their_packet.result.get() = Some(try_result) };
+            // unsafe { *their_packet.result.get() = Some(try_result) };
             // Here `their_packet` gets dropped, and if this is the last `Arc` for that packet that
             // will call `decrement_num_running_threads` and therefore signal that this thread is
             // done.

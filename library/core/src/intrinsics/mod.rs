@@ -1342,7 +1342,11 @@ pub const fn unlikely(b: bool) -> bool {
 #[miri::intrinsic_fallback_is_spec]
 #[inline]
 pub fn select_unpredictable<T>(b: bool, true_val: T, false_val: T) -> T {
-    if b { true_val } else { false_val }
+    if b {
+        true_val
+    } else {
+        false_val
+    }
 }
 
 /// A guard for unsafe functions that cannot ever be executed if `T` is uninhabited:

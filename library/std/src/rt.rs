@@ -197,9 +197,12 @@ fn lang_start<T: crate::process::Termination + 'static>(
 ) -> isize {
     lang_start_internal(
         &move || {
-            crate::sys::backtrace::__rust_begin_short_backtrace(main)
-                .report()
-                .to_i32()
+            let result = main();
+
+            // prevent this frame from being tail-call optimised away
+            crate::hint::black_box(());
+
+            result.report().to_i32()
         },
         argc,
         argv,

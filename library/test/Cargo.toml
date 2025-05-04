@@ -7,7 +7,7 @@ edition = "2024"
 
 [dependencies]
 getopts = { version = "0.2.21", features = ['rustc-dep-of-std'] }
-std = { path = "../std", public = true, features = ['panic-unwind'] }
+std = { path = "../std", public = true }
 core = { path = "../core", public = true }
 
 [target.'cfg(not(all(windows, target_env = "msvc")))'.dependencies]

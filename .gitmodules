@@ -1,3 +1,3 @@
-[submodule "src/llvm-project"]
-	path = src/llvm-project
-	url = https://gitee.com/lihanrui2913/llvm-project
+[submodule "liblibc"]
+	path = liblibc
+	url = https://github.com/aether-os-studio/liblibc

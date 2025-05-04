@@ -45,6 +45,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
     // Hence, we set SIGPIPE to ignore when the program starts up in order
     // to prevent this problem. Use `-Zon-broken-pipe=...` to alter this
     // behavior.
+    #[cfg(not(target_os = "aether"))]
     reset_sigpipe(sigpipe);
 
     stack_overflow::init();
@@ -64,6 +65,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
         // fast path with a single syscall for systems with poll()
         #[cfg(not(any(
             miri,
+            target_os = "aether",
             target_os = "emscripten",
             target_os = "fuchsia",
             target_os = "vxworks",

@@ -29,6 +29,7 @@ unsafe extern "C" {
     #[cfg(not(any(target_os = "dragonfly", target_os = "vxworks", target_os = "rtems")))]
     #[cfg_attr(
         any(
+            target_os = "aether",
             target_os = "linux",
             target_os = "emscripten",
             target_os = "fuchsia",

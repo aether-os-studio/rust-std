@@ -14,8 +14,8 @@ test = { path = "../test", public = true }
 
 # Forward features to the `std` crate as necessary
 [features]
-default = ["std_detect_file_io", "std_detect_dlsym_getauxval", "panic-unwind"]
-backtrace = ["std/backtrace"]
+default = ["std_detect_file_io", "std_detect_dlsym_getauxval"]
+# backtrace = ["std/backtrace"]
 compiler-builtins-c = ["std/compiler-builtins-c"]
 compiler-builtins-mem = ["std/compiler-builtins-mem"]
 compiler-builtins-no-asm = ["std/compiler-builtins-no-asm"]
