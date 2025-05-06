@@ -41,12 +41,20 @@
     },
     "pre-link-args": {
         "gnu-cc": [
-            "-m64",
-            "-no-pie"
+            "-static",
+            "-no-pie",
+            "-nostdlib",
+            "-L/usr/libc-x86_64/lib",
+            "-lc",
+            "-lm"
         ],
         "gnu-lld-cc": [
-            "-m64",
-            "-no-pie"
+            "-static",
+            "-no-pie",
+            "-nostdlib",
+            "-L/usr/libc-x86_64/lib",
+            "-lc",
+            "-lm"
         ]
     },
     "pre-link-objects-fallback": {

@@ -9,7 +9,6 @@ CARGO_PROFILE_RELEASE_DEBUG=0 \
     __CARGO_DEFAULT_LIB_METADATA="stablestd" \
     cargo build \
     --target x86_64-unknown-aether \
-    --features "panic_immediate_abort" \
     -Zbinary-dep-depinfo \
     --manifest-path "library/sysroot/Cargo.toml"
 

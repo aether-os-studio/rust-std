@@ -250,6 +250,7 @@
 #![warn(deprecated_in_future)]
 #![warn(missing_docs)]
 #![warn(missing_debug_implementations)]
+#![allow(dead_code)]
 #![allow(explicit_outlives_requirements)]
 #![allow(unused_lifetimes)]
 #![allow(internal_features)]
@@ -262,6 +263,7 @@
 // std may use features in a platform-specific way
 #![allow(unused_features)]
 #![allow(unused_imports)]
+#![allow(unused_variables)]
 //
 // Features:
 #![cfg_attr(

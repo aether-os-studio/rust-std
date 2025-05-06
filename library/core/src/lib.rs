@@ -80,6 +80,7 @@
 #![deny(rust_2021_incompatible_or_patterns)]
 #![deny(unsafe_op_in_unsafe_fn)]
 #![deny(fuzzy_provenance_casts)]
+#![allow(dead_code)]
 #![warn(deprecated_in_future)]
 #![warn(missing_debug_implementations)]
 #![warn(missing_docs)]

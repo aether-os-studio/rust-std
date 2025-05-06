@@ -926,7 +926,5 @@ fn rust_panic(msg: &mut dyn PanicPayload) -> ! {
 #[cfg_attr(not(test), rustc_std_internal_symbol)]
 #[cfg(feature = "panic_immediate_abort")]
 fn rust_panic(_: &mut dyn PanicPayload) -> ! {
-    unsafe {
-        crate::intrinsics::abort();
-    }
+    crate::intrinsics::abort();
 }

@@ -83,6 +83,7 @@
 #![warn(deprecated_in_future)]
 #![warn(missing_debug_implementations)]
 #![warn(missing_docs)]
+#![allow(dead_code)]
 #![allow(explicit_outlives_requirements)]
 #![warn(multiple_supertrait_upcastable)]
 #![allow(internal_features)]
