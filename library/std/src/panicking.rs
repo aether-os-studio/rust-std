@@ -699,8 +699,11 @@ pub fn begin_panic_handler(info: &core::panic::PanicInfo<'_>) -> ! {
         }
     }
 
-    let loc = info.location().unwrap(); // The current implementation always returns Some
-    let msg = info.message();
+    // let loc = info.location().unwrap(); // The current implementation always returns Some
+    // let msg = info.message();
+
+    println!("{}", info);
+
     // crate::sys::backtrace::__rust_end_short_backtrace(move || {
     //     if let Some(s) = msg.as_str() {
     //         rust_panic_with_hook(
